@@ -92,6 +92,15 @@ class ActivityController extends Controller
         return to_route('activities.show', $activity)
             ->with('success', 'Kegiatan berhasil diperbarui.');
     }
+    public function trash(): View
+    {
+        $activities = Activity::onlyTrashed()
+            ->with('category')
+            ->latest('deleted_at')
+            ->get();
+
+        return view('activities.trash', compact('activities'));
+    }
 
     public function destroy(Activity $activity): RedirectResponse
     {
@@ -99,6 +108,15 @@ class ActivityController extends Controller
 
         return to_route('activities.index')
             ->with('success', 'Kegiatan berhasil dihapus.');
+    }
+
+    public function restore(int $activity): RedirectResponse
+    {
+        $activity = Activity::onlyTrashed()->findOrFail($activity);
+        $activity->restore();
+
+        return to_route('activities.trash')     
+            ->with('success', 'Kegiatan berhasil dipulihkan.');
     }
 
     public function publish(

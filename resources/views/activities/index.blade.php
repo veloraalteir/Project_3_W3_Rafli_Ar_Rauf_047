@@ -4,6 +4,7 @@
     <h1>Daftar Kegiatan</h1>
 
     <a href="{{ route('activities.create') }}">Tambah Kegiatan</a>
+    <a href="{{ route('activities.trash') }}">Sampah</a>
 
     <form action="{{ route('activities.index') }}" method="GET">
         <div>
