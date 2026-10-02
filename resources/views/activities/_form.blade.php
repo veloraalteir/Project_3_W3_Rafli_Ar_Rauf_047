@@ -35,14 +35,34 @@
 </div>
 
 <div>
-    <label for="category">Kategori</label>
+    <label for="code">Kode</label>
     <input
-        id="category"
-        name="category"
-        value="{{ old('category', $activity->category ?? '') }}"
+        id="code"
+        name="code"
+        value="{{ old('code', $activity->code ?? '') }}"
     >
 
-    @error('category')
+    @error('code')
+        <p>{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="category_id">Kategori</label>
+    <select name="category_id" id="category_id">
+        <option value="">-- Pilih Kategori --</option>
+
+        @foreach ($categories as $category)
+            <option
+                value="{{ $category->id }}"
+                @selected((string) old('category_id', $activity->category_id ?? '') === (string) $category->id)
+            >
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('category_id')
         <p>{{ $message }}</p>
     @enderror
 </div>

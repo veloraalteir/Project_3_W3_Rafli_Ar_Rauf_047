@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
+use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -13,6 +14,7 @@ class ActivityController extends Controller
     public function index(): View
     {
         $activities = Activity::query()
+            ->with('category')
             ->orderBy('activity_date')
             ->get();
 
@@ -21,7 +23,11 @@ class ActivityController extends Controller
 
     public function create(): View
     {
-        return view('activities.create');
+        $categories = Category::query()
+            ->orderBy('name')
+            ->get();
+
+        return view('activities.create', compact('categories'));
     }
 
     public function store(StoreActivityRequest $request): RedirectResponse
@@ -34,12 +40,18 @@ class ActivityController extends Controller
 
     public function show(Activity $activity): View
     {
+        $activity->load('category');
+
         return view('activities.show', compact('activity'));
     }
 
     public function edit(Activity $activity): View
     {
-        return view('activities.edit', compact('activity'));
+        $categories = Category::query()
+            ->orderBy('name')
+            ->get();
+
+        return view('activities.edit', compact('activity', 'categories'));
     }
 
     public function update(

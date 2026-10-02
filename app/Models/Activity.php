@@ -10,8 +10,9 @@ class Activity extends Model
         'title',
         'description',
         'activity_date',
-        'category',
         'status',
+        'category_id',
+        'code',
     ];
 
     protected function casts(): array
@@ -19,5 +20,10 @@ class Activity extends Model
         return [
             'activity_date' => 'date',
         ];
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -14,7 +14,8 @@
             </h2>
 
             <p>Tanggal: {{ $activity->activity_date->format('d M Y') }}</p>
-            <p>Kategori: {{ $activity->category }}</p>
+            <p>Kode: {{ $activity->code }}</p>
+            <p>Kategori: {{ $activity->category->name }}</p>
             <p>Status: {{ $activity->status }}</p>
 
             <a href="{{ route('activities.edit', $activity) }}">Edit</a>
