@@ -10,6 +10,10 @@ class Activity extends Model
         'title',
         'description',
         'activity_date',
+        'start_at',
+        'end_at',
+        'location',
+        'capacity',
         'status',
         'category_id',
         'code',
@@ -19,6 +23,8 @@ class Activity extends Model
     {
         return [
             'activity_date' => 'date',
+            'start_at' => 'datetime',
+            'end_at' => 'datetime',
         ];
     }
 

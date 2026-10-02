@@ -5,6 +5,67 @@
 
     <a href="{{ route('activities.create') }}">Tambah Kegiatan</a>
 
+    <form action="{{ route('activities.index') }}" method="GET">
+        <div>
+            <label for="search">Cari</label>
+            <input
+                type="text"
+                id="search"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari judul atau kode"
+            >
+        </div>
+
+        <div>
+            <label for="category_id">Kategori</label>
+            <select name="category_id" id="category_id">
+                <option value="">Semua Kategori</option>
+
+                @foreach ($categories as $category)
+                    <option
+                        value="{{ $category->id }}"
+                        @selected((string) request('category_id') === (string) $category->id)
+                    >
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="status">Status</label>
+            <select name="status" id="status">
+                <option value="">Semua Status</option>
+
+                @foreach (['Planned', 'Ongoing', 'Done'] as $status)
+                    <option
+                        value="{{ $status }}"
+                        @selected(request('status') === $status)
+                    >
+                        {{ $status }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="sort">Urutan</label>
+            <select name="sort" id="sort">
+                <option value="newest" @selected(request('sort', 'newest') === 'newest')>
+                    Terbaru
+                </option>
+
+                <option value="oldest" @selected(request('sort') === 'oldest')>
+                    Terlama
+                </option>
+            </select>
+        </div>
+
+        <button type="submit">Terapkan</button>
+        <a href="{{ route('activities.index') }}">Reset</a>
+    </form>
+
     @forelse ($activities as $activity)
         <article>
             <h2>
@@ -27,6 +88,8 @@
             </form>
         </article>
     @empty
-        <p>Belum ada kegiatan.</p>
+        <p>Belum ada kegiatan yang sesuai.</p>
     @endforelse
+
+    {{ $activities->links() }}
 @endsection

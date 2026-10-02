@@ -18,6 +18,10 @@ class UpdateActivityRequest extends FormRequest
             'title' => ['required', 'string', 'min:5', 'max:100'],
             'description' => ['nullable', 'string', 'max:1000'],
             'activity_date' => ['required', 'date'],
+            'start_at' => ['required', 'date'],
+            'end_at' => ['required', 'date', 'after_or_equal:start_at'],
+            'location' => ['required', 'string', 'max:255'],
+            'capacity' => ['required', 'integer', 'min:1', 'max:500'],
             'category_id' => ['required', 'exists:categories,id'],
             'code' => [
                 'required',

@@ -8,17 +8,42 @@ use App\Models\Activity;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-
+use App\Services\ActivityStatusService;
+use Illuminate\Http\Request;
 class ActivityController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $activities = Activity::query()
-            ->with('category')
-            ->orderBy('activity_date')
+        $categories = Category::query()
+            ->orderBy('name')
             ->get();
 
-        return view('activities.index', compact('activities'));
+        $activities = Activity::query()
+            ->with('category')
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->category_id, function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->when($request->status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->when(
+                $request->sort === 'oldest',
+                fn ($query) => $query->orderBy('activity_date', 'asc')
+            )
+            ->when(
+                $request->sort !== 'oldest',
+                fn ($query) => $query->orderBy('activity_date', 'desc')
+            )
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('activities.index', compact('activities', 'categories'));
     }
 
     public function create(): View
@@ -70,5 +95,17 @@ class ActivityController extends Controller
 
         return to_route('activities.index')
             ->with('success', 'Kegiatan berhasil dihapus.');
+    }
+    public function transition(
+        ActivityStatusService $statusService,
+        Activity $activity
+    ): RedirectResponse {
+        $statusService->transition(
+            $activity,
+            request('status')
+        );
+
+        return to_route('activities.show', $activity)
+            ->with('success', 'Status kegiatan berhasil diperbarui.');
     }
 }

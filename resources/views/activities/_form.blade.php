@@ -35,6 +35,63 @@
 </div>
 
 <div>
+    <label for="start_at">Waktu Mulai</label>
+    <input
+        type="datetime-local"
+        id="start_at"
+        name="start_at"
+        value="{{ old('start_at', isset($activity) && $activity->start_at ? $activity->start_at->format('Y-m-d\TH:i') : '') }}"
+    >
+
+    @error('start_at')
+        <p>{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="end_at">Waktu Selesai</label>
+    <input
+        type="datetime-local"
+        id="end_at"
+        name="end_at"
+        value="{{ old('end_at', isset($activity) && $activity->end_at ? $activity->end_at->format('Y-m-d\TH:i') : '') }}"
+    >
+
+    @error('end_at')
+        <p>{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="location">Lokasi</label>
+    <input
+        id="location"
+        name="location"
+        value="{{ old('location', $activity->location ?? '') }}"
+    >
+
+    @error('location')
+        <p>{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="capacity">Kapasitas</label>
+    <input
+        type="number"
+        id="capacity"
+        name="capacity"
+        value="{{ old('capacity', $activity->capacity ?? '') }}"
+        min="1"
+        max="500"
+    >
+
+    @error('capacity')
+        <p>{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
     <label for="code">Kode</label>
     <input
         id="code"
