@@ -8,28 +8,27 @@
     <p>Kode: {{ $activity->code }}</p>
     <p>Kategori: {{ $activity->category->name }}</p>
     <p>Status: {{ $activity->status }}</p>
-    <form action="{{ route('activities.transition', $activity) }}" method="POST">
-    @csrf
-    @method('PATCH')
 
-    <label for="status">Ubah Status</label>
+    @if ($activity->status === 'draft')
+        <form action="{{ route('activities.publish', $activity) }}" method="POST">
+            @csrf
+            @method('PATCH')
 
-    <select name="status" id="status">
-        @if ($activity->status === 'Planned')
-            <option value="Ongoing">Ongoing</option>
-        @elseif ($activity->status === 'Ongoing')
-            <option value="Done">Done</option>
-        @endif
-    </select>
+            <button type="submit">Publish</button>
+        </form>
+    @elseif ($activity->status === 'published')
+        <form action="{{ route('activities.complete', $activity) }}" method="POST">
+            @csrf
+            @method('PATCH')
+
+            <button type="submit">Complete</button>
+        </form>
+    @endif
 
     @error('status')
         <p>{{ $message }}</p>
     @enderror
 
-    @if ($activity->status !== 'Done')
-        <button type="submit">Ubah Status</button>
-    @endif
-    </form>
     <a href="{{ route('activities.edit', $activity) }}">Edit</a>
     <a href="{{ route('activities.index') }}">Kembali</a>
 @endsection

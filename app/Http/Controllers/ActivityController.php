@@ -6,10 +6,11 @@ use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
 use App\Models\Category;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use App\Services\ActivityStatusService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
+
 class ActivityController extends Controller
 {
     public function index(Request $request): View
@@ -34,11 +35,11 @@ class ActivityController extends Controller
             })
             ->when(
                 $request->sort === 'oldest',
-                fn ($query) => $query->orderBy('activity_date', 'asc')
+                fn ($query) => $query->orderBy('start_at', 'asc')
             )
             ->when(
                 $request->sort !== 'oldest',
-                fn ($query) => $query->orderBy('activity_date', 'desc')
+                fn ($query) => $query->orderBy('start_at', 'desc')
             )
             ->paginate(10)
             ->withQueryString();
@@ -57,7 +58,10 @@ class ActivityController extends Controller
 
     public function store(StoreActivityRequest $request): RedirectResponse
     {
-        $activity = Activity::create($request->validated());
+        $data = $request->validated();
+        $data['status'] = 'draft';
+
+        $activity = Activity::create($data);
 
         return to_route('activities.show', $activity)
             ->with('success', 'Kegiatan berhasil dibuat.');
@@ -96,16 +100,24 @@ class ActivityController extends Controller
         return to_route('activities.index')
             ->with('success', 'Kegiatan berhasil dihapus.');
     }
-    public function transition(
+
+    public function publish(
         ActivityStatusService $statusService,
         Activity $activity
     ): RedirectResponse {
-        $statusService->transition(
-            $activity,
-            request('status')
-        );
+        $statusService->publish($activity);
 
         return to_route('activities.show', $activity)
-            ->with('success', 'Status kegiatan berhasil diperbarui.');
+            ->with('success', 'Kegiatan berhasil dipublikasikan.');
+    }
+
+    public function complete(
+        ActivityStatusService $statusService,
+        Activity $activity
+    ): RedirectResponse {
+        $statusService->complete($activity);
+
+        return to_route('activities.show', $activity)
+            ->with('success', 'Kegiatan berhasil diselesaikan.');
     }
 }

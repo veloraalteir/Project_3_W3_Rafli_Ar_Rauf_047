@@ -29,10 +29,6 @@ class UpdateActivityRequest extends FormRequest
                 'max:50',
                 Rule::unique('activities', 'code')->ignore($this->route('activity')),
             ],
-            'status' => [
-                'required',
-                Rule::in(['Planned', 'Ongoing', 'Done']),
-            ],
         ];
     }
 }

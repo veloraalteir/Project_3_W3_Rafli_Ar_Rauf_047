@@ -123,21 +123,3 @@
         <p>{{ $message }}</p>
     @enderror
 </div>
-
-<div>
-    <label for="status">Status</label>
-    <select name="status" id="status">
-        @foreach (['Planned', 'Ongoing', 'Done'] as $status)
-            <option
-                value="{{ $status }}"
-                @selected(old('status', $activity->status ?? 'Planned') === $status)
-            >
-                {{ $status }}
-            </option>
-        @endforeach
-    </select>
-
-    @error('status')
-        <p>{{ $message }}</p>
-    @enderror
-</div>

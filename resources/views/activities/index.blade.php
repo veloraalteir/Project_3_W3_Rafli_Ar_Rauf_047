@@ -38,7 +38,7 @@
             <select name="status" id="status">
                 <option value="">Semua Status</option>
 
-                @foreach (['Planned', 'Ongoing', 'Done'] as $status)
+                @foreach (['draft', 'published', 'completed'] as $status)
                     <option
                         value="{{ $status }}"
                         @selected(request('status') === $status)

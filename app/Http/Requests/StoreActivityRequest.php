@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreActivityRequest extends FormRequest
 {
@@ -24,10 +23,6 @@ class StoreActivityRequest extends FormRequest
             'capacity' => ['required', 'integer', 'min:1', 'max:500'],
             'category_id' => ['required', 'exists:categories,id'],
             'code' => ['required', 'string', 'max:50', 'unique:activities,code'],
-            'status' => [
-                'required',
-                Rule::in(['Planned', 'Ongoing', 'Done']),
-            ],
         ];
     }
 }
